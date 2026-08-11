@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentic AI Test Automation</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="app-header__inner">
+      <div>
+        <h1>Agentic AI Test Automation</h1>
+        <p class="subtitle">AI-powered test generation, execution, failure analysis and self-healing</p>
+      </div>
+      <div id="connection-status" class="connection-status" aria-live="polite">
+        <span class="connection-dot" id="connection-dot"></span>
+        <span id="connection-text">Checking backend&hellip;</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- STATISTICS -->
+    <section aria-label="Statistics" class="section">
+      <div class="section__header">
+        <h2>Overview</h2>
+        <button id="refresh-stats-btn" class="btn btn--ghost btn--small" type="button">Refresh</button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-card__label">Total Test Cases</span>
+          <span class="stat-card__value" id="stat-total">&ndash;</span>
+        </div>
+        <div class="stat-card stat-card--success">
+          <span class="stat-card__label">Passed</span>
+          <span class="stat-card__value" id="stat-passed">&ndash;</span>
+        </div>
+        <div class="stat-card stat-card--danger">
+          <span class="stat-card__label">Failed</span>
+          <span class="stat-card__value" id="stat-failed">&ndash;</span>
+        </div>
+        <div class="stat-card stat-card--info">
+          <span class="stat-card__label">Healed</span>
+          <span class="stat-card__value" id="stat-healed">&ndash;</span>
+        </div>
+        <div class="stat-card stat-card--primary">
+          <span class="stat-card__label">Success Rate</span>
+          <span class="stat-card__value" id="stat-success-rate">&ndash;</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- REQUIREMENT INPUT -->
+    <section aria-labelledby="requirement-heading" class="section">
+      <div class="section__header">
+        <h2 id="requirement-heading">1. Requirement</h2>
+      </div>
+      <form id="requirement-form">
+        <label for="requirement-textarea">Enter your testing requirement&hellip;</label>
+        <textarea
+          id="requirement-textarea"
+          rows="3"
+          placeholder="e.g. User should be able to login with valid credentials and see the dashboard."
+          required
+        ></textarea>
+        <div class="form-actions">
+          <button id="analyze-requirement-btn" class="btn btn--primary" type="submit">Analyze Requirement</button>
+        </div>
+      </form>
+      <p id="requirement-error" class="error-message" role="alert" hidden></p>
+    </section>
+
+    <!-- REQUIREMENT ANALYSIS -->
+    <section id="analysis-section" aria-labelledby="analysis-heading" class="section" hidden>
+      <div class="section__header">
+        <h2 id="analysis-heading">2. Requirement Analysis</h2>
+      </div>
+      <div id="analysis-content" class="detail-grid"></div>
+      <div class="form-actions">
+        <button id="generate-test-cases-btn" class="btn btn--primary" type="button">Generate Test Cases</button>
+      </div>
+    </section>
+
+    <!-- TEST CASES -->
+    <section id="test-cases-section" aria-labelledby="test-cases-heading" class="section" hidden>
+      <div class="section__header">
+        <h2 id="test-cases-heading">3. Test Cases</h2>
+      </div>
+      <div class="table-scroll">
+        <table id="test-cases-table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Title</th>
+              <th scope="col">Type</th>
+              <th scope="col">Priority</th>
+              <th scope="col">Expected Result</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="test-cases-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- GENERATED TESTS -->
+    <section id="generated-tests-section" aria-labelledby="generated-tests-heading" class="section" hidden>
+      <div class="section__header">
+        <h2 id="generated-tests-heading">4. Generated Tests</h2>
+      </div>
+      <div class="table-scroll">
+        <table id="generated-tests-table">
+          <thead>
+            <tr>
+              <th scope="col">Test Case ID</th>
+              <th scope="col">Generated File</th>
+              <th scope="col">Validation</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="generated-tests-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- EXECUTION RESULTS -->
+    <section id="execution-section" aria-labelledby="execution-heading" class="section" hidden>
+      <div class="section__header">
+        <h2 id="execution-heading">5. Execution Results</h2>
+      </div>
+      <div id="execution-content" class="detail-grid"></div>
+      <div class="form-actions">
+        <button id="analyze-failure-btn" class="btn btn--secondary" type="button" hidden>Analyze Failure</button>
+      </div>
+    </section>
+
+    <!-- AI FAILURE ANALYSIS -->
+    <section id="failure-analysis-section" aria-labelledby="failure-analysis-heading" class="section" hidden>
+      <div class="section__header">
+        <h2 id="failure-analysis-heading">6. AI Failure Analysis</h2>
+        <button id="view-full-analysis-btn" class="btn btn--ghost btn--small" type="button">View Full Analysis</button>
+      </div>
+      <div id="failure-analysis-content" class="detail-grid"></div>
+      <div class="form-actions">
+        <button id="heal-selector-btn" class="btn btn--secondary" type="button">Heal Selector</button>
+      </div>
+    </section>
+
+    <!-- SELF-HEALING -->
+    <section id="healing-section" aria-labelledby="healing-heading" class="section" hidden>
+      <div class="section__header">
+        <h2 id="healing-heading">7. Self-Healing</h2>
+      </div>
+      <div id="healing-content" class="detail-grid"></div>
+    </section>
+
+    <!-- EXECUTION HISTORY -->
+    <section aria-labelledby="history-heading" class="section">
+      <div class="section__header">
+        <h2 id="history-heading">8. Execution History</h2>
+      </div>
+
+      <div class="history-controls">
+        <div class="field">
+          <label for="history-requirement-select">Requirement</label>
+          <select id="history-requirement-select">
+            <option value="">Select a requirement&hellip;</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="history-test-case-select">Test case</label>
+          <select id="history-test-case-select" disabled>
+            <option value="">Select a test case&hellip;</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-bar" role="group" aria-label="Filter execution history">
+        <button class="filter-btn is-active" data-filter="all" type="button">All</button>
+        <button class="filter-btn" data-filter="passed" type="button">Passed</button>
+        <button class="filter-btn" data-filter="failed" type="button">Failed</button>
+        <button class="filter-btn" data-filter="healed" type="button">Healed</button>
+      </div>
+
+      <div class="table-scroll">
+        <table id="history-table">
+          <thead>
+            <tr>
+              <th scope="col">Test ID</th>
+              <th scope="col">Status</th>
+              <th scope="col">Duration</th>
+              <th scope="col">Healed</th>
+              <th scope="col">Created At</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody">
+            <tr><td colspan="5" class="empty-row">Select a requirement and test case to see history.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Test case details modal -->
+  <div id="test-case-modal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="test-case-modal-title">
+      <div class="modal__header">
+        <h3 id="test-case-modal-title">Test Case Details</h3>
+        <button class="modal__close" type="button" data-close-modal="test-case-modal" aria-label="Close">&times;</button>
+      </div>
+      <div id="test-case-modal-content" class="modal__body"></div>
+    </div>
+  </div>
+
+  <!-- Failure analysis details modal -->
+  <div id="failure-analysis-modal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="failure-analysis-modal-title">
+      <div class="modal__header">
+        <h3 id="failure-analysis-modal-title">Full Failure Analysis</h3>
+        <button class="modal__close" type="button" data-close-modal="failure-analysis-modal" aria-label="Close">&times;</button>
+      </div>
+      <div id="failure-analysis-modal-content" class="modal__body"></div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

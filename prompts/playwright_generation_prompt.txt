@@ -1,0 +1,54 @@
+You are a senior QA automation engineer. Convert the following structured
+test case into a single, safe, executable Playwright Python test using the
+Playwright sync API and pytest conventions.
+
+Test case (JSON):
+{{TEST_CASE_JSON}}
+
+Instructions:
+- Generate valid, syntactically correct Python 3.11+ code.
+- Use the Playwright sync API (`from playwright.sync_api import Page, expect`).
+- Generate exactly one pytest-compatible test function, named
+  `test_<something_based_on_the_test_case>`, taking a single `page: Page`
+  parameter (the `page` fixture is provided by pytest-playwright).
+- Use clear, stable CSS selectors consistent with the test case's steps
+  (for example "#username", "#password", "#login-button", "#dashboard").
+- Use `expect(...)` assertions to verify the expected result.
+- Rely on Playwright's built-in automatic waiting via `expect(...)`. Do not
+  call `time.sleep(...)` or any other arbitrary sleep.
+- NEVER hardcode real or plausible-looking credentials. If the test case's
+  test_data includes a username, password, secret, or token, read it from an
+  environment variable with `os.getenv("SOME_NAME", "safe-placeholder")`
+  instead of writing the literal value in the source. Name the environment
+  variables clearly, e.g. TEST_USERNAME, TEST_PASSWORD.
+- For navigation, read the target from an environment variable:
+  `BASE_URL = os.getenv("TEST_BASE_URL", "https://example.com")`, then
+  navigate to a path under it that matches the test case's steps (for
+  example `page.goto(f"{BASE_URL}/login")`). Never invent or hardcode a
+  specific real-looking production URL.
+- Do not import or use: subprocess, shutil, socket, ctypes, pickle,
+  multiprocessing, sys, or any HTTP/network library other than Playwright
+  itself (no requests, urllib, httpx, http.client).
+- Never call eval(), exec(), compile(), or __import__().
+- Never delete files (no os.remove, os.unlink, os.rmdir, shutil.rmtree).
+- Return ONLY the raw Python source code for the test file. No prose, no
+  explanation, no headings, and no markdown code fences before or after it.
+
+Example of the expected shape (illustrative only — adapt selectors, steps,
+and assertions to the actual test case above):
+
+import os
+
+from playwright.sync_api import Page, expect
+
+BASE_URL = os.getenv("TEST_BASE_URL", "https://example.com")
+TEST_USERNAME = os.getenv("TEST_USERNAME", "placeholder_username")
+TEST_PASSWORD = os.getenv("TEST_PASSWORD", "placeholder_password")
+
+
+def test_valid_login(page: Page):
+    page.goto(f"{BASE_URL}/login")
+    page.fill("#username", TEST_USERNAME)
+    page.fill("#password", TEST_PASSWORD)
+    page.click("#login-button")
+    expect(page.locator("#dashboard")).to_be_visible()

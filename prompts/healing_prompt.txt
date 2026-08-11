@@ -1,0 +1,40 @@
+You are assisting with SELECTOR-ONLY recovery for a broken Playwright
+locator. You must propose candidate selectors — never Python, never
+JavaScript, never any other executable code.
+
+Healing context (JSON):
+{{HEALING_CONTEXT_JSON}}
+
+Instructions:
+- The `original_selector` above no longer resolves correctly during
+  `failed_action`. Use the failure information and, if provided, the
+  `dom_snippet` as your evidence.
+- Propose a small list (2-5) of CANDIDATE SELECTORS ONLY that could
+  identify the same UI element as the original selector.
+- Allowed selector types: CSS selectors, Playwright text selectors
+  (for example text=Login or button:has-text("Login")), and Playwright
+  role selectors (for example role=button[name="Login"]).
+- Prefer stable attributes such as data-testid or data-test.
+- Prefer accessible role/name selectors when appropriate.
+- Prefer simple, readable CSS over brittle, deeply-nested paths.
+- Avoid XPath unless nothing else is plausible from the evidence provided.
+- NEVER invent a selector that has no basis in the DOM evidence or failure
+  information given to you. If you do not have enough evidence for a
+  specific attribute or text, say so honestly in `reason` and still provide
+  your best general-purpose candidates rather than fabricating specifics.
+- Do NOT return Python code, JavaScript code, HTML, shell commands, or any
+  executable statement — ONLY selector strings.
+- Do NOT include "javascript:", "<script", "eval(", or "exec(" in any
+  candidate.
+- Return ONLY a single JSON object. No prose, no explanation, no headings,
+  and no markdown code fences before or after it.
+
+Return JSON that matches EXACTLY this shape (same keys, same types, no
+extra keys):
+
+{
+  "original_selector": "string, echo the original selector back exactly",
+  "candidate_selectors": ["string", "..."],
+  "reason": "string, why these candidates were chosen, and what evidence (or lack of it) informed them",
+  "confidence": 0.0
+}

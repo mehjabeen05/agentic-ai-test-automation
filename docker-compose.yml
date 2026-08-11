@@ -1,0 +1,45 @@
+services:
+  app:
+    build: .
+    image: agentic-test-automation:latest
+    ports:
+      - "8000:8000"
+    environment:
+      # Real values come from a local .env file (via env_file below) or the
+      # host/orchestrator environment — never from this file and never baked
+      # into the image. Defaults here are safe, non-secret fallbacks only.
+      LLM_MODEL: ${LLM_MODEL:-gpt-4o-mini}
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://api.openai.com/v1}
+      APP_ENV: ${APP_ENV:-production}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      API_HOST: ${API_HOST:-0.0.0.0}
+      API_PORT: ${API_PORT:-8000}
+      CORS_ORIGINS: ${CORS_ORIGINS:-}
+    # Reads LLM_API_KEY (and anything else in .env) from the host's .env file
+    # at container-start time. The file itself is never copied into the
+    # image (see .dockerignore) — only its values are injected as env vars.
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      # Persist the SQLite database, logs, reports, screenshots, and
+      # AI-generated tests across container restarts/rebuilds.
+      - agentic-data:/app/data
+      - agentic-logs:/app/logs
+      - agentic-reports:/app/reports
+      - agentic-screenshots:/app/screenshots
+      - agentic-generated-tests:/app/tests/generated
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3).status == 200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  agentic-data:
+  agentic-logs:
+  agentic-reports:
+  agentic-screenshots:
+  agentic-generated-tests:

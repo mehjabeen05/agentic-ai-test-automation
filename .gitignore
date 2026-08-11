@@ -1,0 +1,45 @@
+# Environments
+.venv/
+venv/
+env/
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Database (the data/ directory itself is tracked, via data/README.md)
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+
+# Logs
+logs/
+*.log
+
+# Test artifacts (generated tests themselves ARE tracked; only run artifacts are ignored)
+screenshots/*.png
+screenshots/*.jpg
+reports/*
+!reports/.gitkeep
+# Un-ignore these metadata directories themselves, but not their generated contents.
+!reports/execution/
+reports/execution/*
+!reports/execution/.gitkeep
+!reports/healing/
+reports/healing/*
+!reports/healing/.gitkeep
+allure-results/
+allure-report/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

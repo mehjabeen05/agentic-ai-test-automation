@@ -1,0 +1,46 @@
+# Version control / editor
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Python virtual environment and caches
+.venv/
+venv/
+env/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Secrets — never bake real credentials into the image.
+.env
+
+# Local runtime data / artifacts — these are created fresh inside the
+# container (see Dockerfile's `mkdir -p`) and should not be copied in from
+# the host.
+data/
+logs/
+*.log
+screenshots/
+reports/
+allure-results/
+allure-report/
+tests/generated/
+
+# Not needed at runtime — the image only needs to run `uvicorn app:app`.
+tests/
+examples/
+.github/
+
+# Dev-only tooling, not installed in the production image.
+requirements-dev.txt
+ruff.toml
+
+# Docs / misc
+README.md
+*.md

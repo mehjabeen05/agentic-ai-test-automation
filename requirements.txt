@@ -1,0 +1,27 @@
+# Web framework / API
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+
+# Data validation and settings
+pydantic==2.9.2
+pydantic-settings==2.5.2
+
+# Browser automation and testing
+playwright==1.47.0
+pytest==8.3.3
+pytest-playwright==0.5.2
+
+# Reporting
+allure-pytest==2.13.5
+
+# Environment variables
+python-dotenv==1.0.1
+
+# HTTP client (used by the LLM client abstraction)
+httpx==0.27.2
+
+# LLM provider SDK (OpenAI-compatible; used by core/llm_client.py)
+openai==2.53.0
+
+# Database: SQLite is used via Python's built-in sqlite3 module (core/database.py).
+# No ORM dependency is required.
