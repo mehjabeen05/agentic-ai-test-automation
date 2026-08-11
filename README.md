@@ -319,3 +319,4 @@ the action that gets performed on retry.
 - Kubernetes deployment
 - Slack/Teams notifications for failures and healing events
 - Advanced visual regression testing
+- mehjabeen429@gmail.com
